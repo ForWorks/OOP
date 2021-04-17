@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.List;
 
-public class Polyline extends Shapes {
+public class Polyline extends Shape {
     public Polyline(List<Double> points, Color penColor, double lineWeight) {
         this.penColor = penColor;
         this.lineWeight = lineWeight;

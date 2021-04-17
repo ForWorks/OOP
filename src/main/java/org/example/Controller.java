@@ -1,24 +1,15 @@
 package org.example;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import org.example.Shapes.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Controller {
-
-    @FXML
-    private MenuBar menu;
 
     @FXML
     private Canvas canvas;
@@ -56,11 +47,18 @@ public class Controller {
     @FXML
     private Button polygon;
 
-    GraphicsContext gc;
+    private Model model;
+    private UndoRedo undoRedo;
 
     @FXML
     void initialize() {
-        gc = canvas.getGraphicsContext2D();
+        model = new Model(canvas);
+        undoRedo = new UndoRedo();
+        model.setBrushColor(brushColor.getValue());
+        model.setPenColor(penColor.getValue());
+        model.setLineWeight(3);
+        penWeight.setText("3");
+        penWeight.setStyle("-fx-display-caret: false");
         undo.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/undo.png"))));
         redo.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/redo.png"))));
         cursor.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/cursor.png"))));
@@ -69,138 +67,71 @@ public class Controller {
         rectangle.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/rectangle.png"))));
         polyline.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/polyline.png"))));
         polygon.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/polygon.png"))));
-        penWeight.setText("1");
+
     }
 
-    private List<Shapes> shapes = new ArrayList();
-    private List<Double> points = new ArrayList<>();
-    private List<Shapes> intermediateShapes = new ArrayList<>();
-
-    public void clearMouseEvents() {
-        canvas.setOnMousePressed(event -> {});
-        canvas.setOnMouseReleased(event -> {});
-        canvas.setOnMouseDragged(event -> {});
-        canvas.setOnMouseMoved(event -> {});
+    public void setBrushColor() {
+        model.setBrushColor(brushColor.getValue());
     }
 
-    public void clearCanvas() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    public void setPenColor() {
+        model.setPenColor(penColor.getValue());
     }
 
-    public void preparationForSimpleShapes() {
-        clearMouseEvents();
-        canvas.setOnMousePressed(event -> {
-            points.add(0, event.getX());
-            points.add(1, event.getY());
-        });
-    }
-
-    public void preparationForComplicatedShapes() {
-        clearMouseEvents();
-        points.clear();
-        canvas.setOnMousePressed(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                points.add(event.getX());
-                points.add(event.getY());
-                points.add(event.getX());
-                points.add(event.getY());
-            } else if (event.getButton() == MouseButton.SECONDARY) {
-                points.set(points.size() - 1, event.getY());
-                points.set(points.size() - 2, event.getX());
-                shapes.add(intermediateShapes.get(0));
-                points.clear();
+    public void setLineWeight() {
+        try {
+            double value = -1;
+            if(!penWeight.getText().equals("")) {
+                value = Double.parseDouble(penWeight.getText());
+                if (value > 0)
+                    model.setLineWeight(Double.parseDouble(penWeight.getText()));
+                else {
+                    model.setLineWeight(1);
+                    penWeight.setText("1");
+                }
             }
-        });
-    }
-
-    public void conclusionForSimpleShapes() {
-        canvas.setOnMouseReleased(event -> {
-            shapes.add(intermediateShapes.get(0));
-        });
-    }
-
-    public void intermediaryFoSimpleShapes(MouseEvent event) {
-        points.add(2, event.getX());
-        points.add(3, event.getY());
-        clearCanvas();
-        for (int i = 0; i < shapes.size(); i++) {
-            shapes.get(i).draw(gc);
         }
-        intermediateShapes.clear();
-    }
-
-    public void intermediaryForComplicatedShapes(MouseEvent event) {
-        clearCanvas();
-        for(Shapes shape :shapes) {
-            shape.draw(gc);
+        catch(Exception err ){
+            model.setLineWeight(1);
+            penWeight.setText("1");
         }
-        points.set(points.size()-1,event.getY());
-        points.set(points.size()-2,event.getX());
-        intermediateShapes.clear();
     }
 
     public void selectedLine() {
-        preparationForSimpleShapes();
-        canvas.setOnMouseDragged(event -> {
-            intermediaryFoSimpleShapes(event);
-            intermediateShapes.add(new Line(points, penColor.getValue(), Double.parseDouble(penWeight.getText())));
-            intermediateShapes.get(0).draw(gc);
-        });
-        conclusionForSimpleShapes();
+        model.drawSimpleShapes(0);
     }
 
     public void selectedEllipse() {
-        preparationForSimpleShapes();
-        canvas.setOnMouseDragged(event -> {
-            intermediaryFoSimpleShapes(event);
-            intermediateShapes.add(new Ellipse(points, penColor.getValue(), brushColor.getValue(), Double.parseDouble(penWeight.getText())));
-            intermediateShapes.get(0).draw(gc);
-        });
-        conclusionForSimpleShapes();
+        model.drawSimpleShapes(1);
     }
 
     public void selectedRectangle() {
-        preparationForSimpleShapes();
-        canvas.setOnMouseDragged(event -> {
-            intermediaryFoSimpleShapes(event);
-            intermediateShapes.add(new Rectangle(points, penColor.getValue(), brushColor.getValue(), Double.parseDouble(penWeight.getText())));
-            intermediateShapes.get(0).draw(gc);
-        });
-        conclusionForSimpleShapes();
+        model.drawSimpleShapes(2);
     }
 
     public void selectedPolyline() {
-        preparationForComplicatedShapes();
-        canvas.setOnMouseMoved(event -> {
-            if(points.size() > 0) {
-                intermediaryForComplicatedShapes(event);
-                intermediateShapes.add(new Polyline(points, penColor.getValue(), Double.parseDouble(penWeight.getText())));
-                intermediateShapes.get(0).draw(gc);
-            }
-        });
+        model.drawComplicatedShapes(3);
     }
 
     public void selectedPolygon() {
-        preparationForComplicatedShapes();
-        canvas.setOnMouseMoved(event -> {
-            if(points.size() > 0) {
-                intermediaryForComplicatedShapes(event);
-                intermediateShapes.add(new Polygon(points, penColor.getValue(), brushColor.getValue(), Double.parseDouble(penWeight.getText())));
-                intermediateShapes.get(0).draw(gc);
-            }
-        });
+        model.drawComplicatedShapes(4);
     }
 
-    public void selectedRedo() {
-        clearMouseEvents();
+    public void selectedClear() {
+        model.clearCanvas();
+        undoRedo.shapes.clear();
     }
 
     public void selectedUndo() {
-        clearMouseEvents();
+        undoRedo.previousStep(model);
+    }
+
+    public void selectedRedo() {
+        undoRedo.nextStep(model);
     }
 
     public void selectedCursor() {
-        clearMouseEvents();
+        model.clearMouseEvents();
     }
 }
 

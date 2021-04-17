@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.List;
 
-public class Line extends Shapes {
+public class Line extends Shape {
     public Line(List<Double> points, Color penColor, double lineWeight) {
         this.penColor = penColor;
         this.lineWeight = lineWeight;

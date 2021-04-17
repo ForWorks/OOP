@@ -4,10 +4,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.List;
 
-public class Ellipse extends Shapes {
+public class Ellipse extends Shape {
     public Ellipse(List<Double> points, Color penColor, Color brushColor, double lineWeight) {
-        this.penColor = penColor;
         this.brushColor = brushColor;
+        this.penColor = penColor;
         this.lineWeight = lineWeight;
         this.points.addAll(points);
     }

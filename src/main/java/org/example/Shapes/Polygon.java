@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.List;
 
-public class Polygon extends Shapes {
+public class Polygon extends Shape {
     public Polygon(List<Double> points, Color penColor, Color brushColor, double lineWeight) {
         this.penColor = penColor;
         this.brushColor = brushColor;

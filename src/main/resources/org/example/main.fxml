@@ -50,24 +50,30 @@
                      </cursor>
                   </Button>
                   <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
-                  <TextField fx:id="penWeight" prefHeight="25.0" prefWidth="78.0" promptText="Pen weight">
+                  <TextField fx:id="penWeight" prefHeight="25.0" onKeyReleased="#setLineWeight" prefWidth="78.0" promptText="Pen weight">
                      <cursor>
-                        <Cursor fx:constant="DEFAULT" />
+                        <Cursor fx:constant="HAND" />
                      </cursor>
                   </TextField>
                   <Label text="Pen color" />
-                  <ColorPicker fx:id="penColor" prefHeight="25.0" prefWidth="29.0">
+                  <ColorPicker fx:id="penColor" onAction="#setPenColor" prefHeight="25.0" prefWidth="29.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ColorPicker>
                   <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
                   <Label text="Brush color" />
-                  <ColorPicker fx:id="brushColor" prefHeight="25.0" prefWidth="29.0">
+                  <ColorPicker fx:id="brushColor" onAction="#setBrushColor" prefHeight="25.0" prefWidth="29.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ColorPicker>
+                  <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
+                  <Button fx:id="Clear" text="Clear" mnemonicParsing="false" onAction="#selectedClear" prefHeight="25.0" prefWidth="50.0">
+                      <cursor>
+                          <Cursor fx:constant="HAND" />
+                      </cursor>
+                  </Button>
               </items>
             </ToolBar>
             <ToolBar orientation="VERTICAL" prefHeight="647.0" prefWidth="50.0">
