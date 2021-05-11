@@ -1,10 +1,10 @@
 package org.example.FactoryShapes;
 
-import javafx.scene.paint.Color;
+import org.example.MyColor;
 import org.example.Shapes.Shape;
 import java.util.List;
 
-public interface FactoryShape {
-    Shape createShape(List<Double> points, Color penColor, Color brushColor, double lineWeight);
+public interface FactoryShape  {
+    Shape createShape(List<Double> points, MyColor penColor, MyColor brushColor, double lineWeight);
 }
 

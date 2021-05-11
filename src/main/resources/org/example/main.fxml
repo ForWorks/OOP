@@ -21,11 +21,8 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Open" onAction="#openImage"/>
+            <MenuItem mnemonicParsing="false" text="Save As" onAction="#saveImage"/>
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
@@ -39,7 +36,7 @@
       <children>
             <ToolBar layoutX="50.0" prefHeight="38.0" prefWidth="749.0">
               <items>
-                <Button fx:id="undo" mnemonicParsing="false" onAction="#selectedUndo" prefHeight="25.0" prefWidth="25.0">
+                  <Button fx:id="undo" mnemonicParsing="false" onAction="#selectedUndo" prefHeight="25.0" prefWidth="25.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -78,11 +75,6 @@
             </ToolBar>
             <ToolBar orientation="VERTICAL" prefHeight="647.0" prefWidth="50.0">
               <items>
-                <Button fx:id="cursor" mnemonicParsing="false" onAction="#selectedCursor" prefHeight="24.0" prefWidth="24.0">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
                   <Button fx:id="line" mnemonicParsing="false" onAction="#selectedLine" prefHeight="24.0" prefWidth="24.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />

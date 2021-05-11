@@ -1,13 +1,13 @@
 package org.example;
 
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import java.io.*;
 
 public class Controller {
 
@@ -30,9 +30,6 @@ public class Controller {
     private ColorPicker brushColor;
 
     @FXML
-    private Button cursor;
-
-    @FXML
     private Button line;
 
     @FXML
@@ -49,19 +46,20 @@ public class Controller {
 
     private Model model;
     private UndoRedo undoRedo;
+    private OpenSaveFiles openSaveFiles;
 
     @FXML
     void initialize() {
         model = new Model(canvas);
         undoRedo = new UndoRedo();
+        openSaveFiles = new OpenSaveFiles();
         model.setBrushColor(brushColor.getValue());
         model.setPenColor(penColor.getValue());
-        model.setLineWeight(3);
-        penWeight.setText("3");
+        model.setLineWeight(1);
+        penWeight.setText("1");
         penWeight.setStyle("-fx-display-caret: false");
         undo.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/undo.png"))));
         redo.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/redo.png"))));
-        cursor.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/cursor.png"))));
         line.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/line.png"))));
         ellipse.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/ellipse.png"))));
         rectangle.setGraphic(new ImageView(new Image(App.class.getResourceAsStream("icons/rectangle.png"))));
@@ -80,7 +78,7 @@ public class Controller {
 
     public void setLineWeight() {
         try {
-            double value = -1;
+            double value = 0;
             if(!penWeight.getText().equals("")) {
                 value = Double.parseDouble(penWeight.getText());
                 if (value > 0)
@@ -91,30 +89,30 @@ public class Controller {
                 }
             }
         }
-        catch(Exception err ){
+        catch(Exception e) {
             model.setLineWeight(1);
             penWeight.setText("1");
         }
     }
 
     public void selectedLine() {
-        model.drawSimpleShapes(0);
+        model.drawShapes(0);
     }
 
     public void selectedEllipse() {
-        model.drawSimpleShapes(1);
+        model.drawShapes(1);
     }
 
     public void selectedRectangle() {
-        model.drawSimpleShapes(2);
+        model.drawShapes(2);
     }
 
     public void selectedPolyline() {
-        model.drawComplicatedShapes(3);
+        model.drawShapes(3);
     }
 
     public void selectedPolygon() {
-        model.drawComplicatedShapes(4);
+        model.drawShapes(4);
     }
 
     public void selectedClear() {
@@ -130,8 +128,19 @@ public class Controller {
         undoRedo.nextStep(model);
     }
 
-    public void selectedCursor() {
-        model.clearMouseEvents();
+    public void openImage() {
+        File file = openSaveFiles.openFile();
+        model.clearCanvas();
+        undoRedo.shapes.clear();
+        undoRedo.elements.clear();
+        model.deserialize(file);
+        model.drawFull();
     }
+
+    public void saveImage() {
+        File file = openSaveFiles.saveFile();
+        model.serialize(file);
+    }
+
 }
 

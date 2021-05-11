@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.scene.canvas.GraphicsContext;
 import org.example.Shapes.Shape;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,4 +31,11 @@ public class UndoRedo {
             }
         }
     }
+
+    public void drawFull(GraphicsContext gc) {
+        for (Shape shape : shapes) {
+            shape.draw(gc);
+        }
+    }
+
 }

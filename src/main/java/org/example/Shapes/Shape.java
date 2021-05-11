@@ -1,16 +1,20 @@
 package org.example.Shapes;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import org.example.MyColor;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shape {
+public class Shape implements Serializable {
+
     protected double lineWeight;
-    protected Color brushColor;
-    protected Color penColor;
+    public MyColor brushColor;
+    public MyColor penColor;
     protected List<Double> points = new ArrayList<>();
+
     public  void draw(GraphicsContext gc) {
 
-    };
+    }
+
 }
